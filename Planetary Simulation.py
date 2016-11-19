@@ -11,6 +11,10 @@ state = []
 #Returns a list of tupples where each tupple contains (parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis)
 #A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
 def get_starting_conditions(file_name):
+	file = open(file_name, "r")
+	contents = file.read()
+	file.close()
+	#Not sure how to extract this information from the file, I have only ever split on white space etc from a .txt
     print('Not done')
     return []
 

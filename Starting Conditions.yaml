@@ -1,0 +1,19 @@
+# Entity Information list
+Entities:
+    - Earth:
+        parent body: -1
+        mass: 5.97237e24
+        radius: 6371000
+        true_anomaly: 0
+        apsis: 0
+        periapsis: 0
+        agrument_of_periapsis: 0
+
+    - Moon:
+        parent body: Earth
+        mass: 7.342e22
+        radius: 1737100
+        true_anomaly: 0
+        apsis: 
+        periapsis: 
+        agrument_of_perigee: 
