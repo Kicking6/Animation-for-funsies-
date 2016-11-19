@@ -2,7 +2,7 @@
 
 -   name: Earth
     parent_body: -1
-    mass: 5.97237e24
+    mass: !!float 5.97237e24
     radius: 6371000
     true_anomaly: 0
     apsis: 0
@@ -11,7 +11,7 @@
 
 -   name: Moon
     parent_body: Earth
-    mass: 7.342e22
+    mass: !!float 7.342e22
     radius: 1737100
     true_anomaly: 0
     apsis: 450400000
