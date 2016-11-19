@@ -9,9 +9,9 @@ G = 6.67408 * 10 ** -11
 #Defines the starting conditions for the start of the simulation
 #Returns a dictionary of dictionaires where each tupple contains (parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis)
 #A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
-def get_starting_conditions(file_name):
-    file_name = 'Starting Conditions.yaml'
-    file = open(file_name, "r")
+def get_starting_conditions(filename):
+    filenamedd = 'Starting Conditions.yaml'
+    file = open(filenamedd, "r")  #filename will need to be changed
     contents = yaml.load(file)
 
     object_list = []
