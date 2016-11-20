@@ -8,6 +8,7 @@
     apsis: 0
     periapsis: 0
     longitude_of_periapsis: 0
+    direction_of_rotation: clockwise
 
 -   name: Moon
     parent_body: Earth
@@ -16,4 +17,5 @@
     true_anomaly: 0
     apsis: 450400000
     periapsis: 362600000
-    longitude_of_periapsis: 5.5528    
+    longitude_of_periapsis: 5.5528
+    direction_of_rotation: clockwise    

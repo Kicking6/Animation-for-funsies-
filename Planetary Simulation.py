@@ -7,7 +7,8 @@ state = []
 G = 6.67408 * 10 ** -11
 
 #Defines the starting conditions for the start of the simulation
-#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis).
+#A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
+#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation).
 def get_starting_conditions(file_name):
     file_name = 'Starting Conditions.yaml'
     file = open(file_name, "r")
@@ -22,15 +23,7 @@ def get_starting_conditions(file_name):
         place += 1
 
     for i in contents:
-        initial_state = types.SimpleNamespace()
-        initial_state.name = i['name']
-        initial_state.parent_body = i['parent_body']
-        initial_state.mass = i['mass']
-        initial_state.radius = i['radius']
-        initial_state.true_anomaly = i['true_anomaly']
-        initial_state.apsis = i['apsis']
-        initial_state.periapsis = i['periapsis']
-        initial_state.longitude_of_periapsis = i['longitude_of_periapsis']
+        initial_state = types.SimpleNamespace(**i)
         object_list.append(initial_state)
     
         key_to_find = i['parent_body']
@@ -40,7 +33,7 @@ def get_starting_conditions(file_name):
     
     return object_list
 
-#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis) and returns
+#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation) and returns
 #a tupple continaing (name, position, velocity, standard gravitational paramater, radius).
 #The orbital characteristics are defined relative to the center of mass of the whole system.
 #If the mass is -1 then the body is a ficticious body only defined to define the starting conditions.
