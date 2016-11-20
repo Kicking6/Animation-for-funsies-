@@ -7,18 +7,11 @@ state = []
 G = 6.67408 * 10 ** -11
 
 #Defines the starting conditions for the start of the simulation
-<<<<<<< HEAD
-#Returns a dictionary of dictionaires where each tupple contains (parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis)
 #A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
-def get_starting_conditions(filename):
-    filenamedd = 'Starting Conditions.yaml'
-    file = open(filenamedd, "r")  #filename will need to be changed
-=======
-#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis).
+#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation).
 def get_starting_conditions(file_name):
     file_name = 'Starting Conditions.yaml'
     file = open(file_name, "r")
->>>>>>> origin/master
     contents = yaml.load(file)
 
     object_list = []
@@ -39,6 +32,7 @@ def get_starting_conditions(file_name):
         initial_state.apsis = i['apsis']
         initial_state.periapsis = i['periapsis']
         initial_state.longitude_of_periapsis = i['longitude_of_periapsis']
+		initial_state.direction_of_rotation = i['direction_of_rotation']
         object_list.append(initial_state)
     
         key_to_find = i['parent_body']
@@ -48,7 +42,7 @@ def get_starting_conditions(file_name):
     
     return object_list
 
-#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis) and returns
+#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation) and returns
 #a tupple continaing (name, position, velocity, standard gravitational paramater, radius).
 #The orbital characteristics are defined relative to the center of mass of the whole system.
 #If the mass is -1 then the body is a ficticious body only defined to define the starting conditions.
