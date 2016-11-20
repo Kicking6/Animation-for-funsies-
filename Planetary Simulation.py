@@ -24,6 +24,7 @@ def get_starting_conditions(file_name):
 
     for i in contents:
         initial_state = types.SimpleNamespace(**i)
+        initial_state.direction_of_rotation = initial_state.direction_of_rotation == 'clockwise'
         object_list.append(initial_state)
     
         key_to_find = i['parent_body']
