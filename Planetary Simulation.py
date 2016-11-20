@@ -23,16 +23,7 @@ def get_starting_conditions(file_name):
         place += 1
 
     for i in contents:
-        initial_state = types.SimpleNamespace()
-        initial_state.name = i['name']
-        initial_state.parent_body = i['parent_body']
-        initial_state.mass = i['mass']
-        initial_state.radius = i['radius']
-        initial_state.true_anomaly = i['true_anomaly']
-        initial_state.apsis = i['apsis']
-        initial_state.periapsis = i['periapsis']
-        initial_state.longitude_of_periapsis = i['longitude_of_periapsis']
-		initial_state.direction_of_rotation = i['direction_of_rotation']
+        initial_state = types.SimpleNamespace(**i)
         object_list.append(initial_state)
     
         key_to_find = i['parent_body']
