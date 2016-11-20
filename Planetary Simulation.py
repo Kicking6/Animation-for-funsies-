@@ -46,7 +46,7 @@ def get_starting_conditions(file_name):
 #If the mass is -1 then the body is a ficticious body only defined to define the starting conditions.
 def convert_to_internal_representation(initial_state):
     length = len(initial_state)
-    state = [-1] * length
+    state.extend([-1] * length)
     for i in range(length):
         state[i] = convert_to_internal_representation_single(initial_state, i)
         
@@ -69,7 +69,7 @@ def convert_to_internal_representation_single(initial_state, index):
             radius = initial_value.radius
         )
         
-    ecc = (initial_value.apsis - initial_value.periapsis) * (initial_value.apsis + initial_value.periapsis)
+    ecc = (initial_value.apsis - initial_value.periapsis) / (initial_value.apsis + initial_value.periapsis)
     semi_latus_rectum = 2 / (1 / initial_value.apsis + 1 / initial_value.periapsis)
     distance = semi_latus_rectum / (1 + ecc * math.cos(initial_value.true_anomaly))
     speed = math.sqrt(parent_body.GM * (2 / distance))
@@ -120,7 +120,7 @@ def show_simulation():
 def main():
     filename = input("Enter the filename for the initial starting conditions: ")
     
-    state = convert_to_internal_representation(get_starting_conditions(filename))
+    convert_to_internal_representation(get_starting_conditions(filename))
 
     #FIX: This may need to be made global, atm it is unused.
     dt = input("Timestep:")
