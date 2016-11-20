@@ -7,18 +7,11 @@ state = []
 G = 6.67408 * 10 ** -11
 
 #Defines the starting conditions for the start of the simulation
-<<<<<<< HEAD
-#Returns a dictionary of dictionaires where each tupple contains (parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis)
 #A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
-def get_starting_conditions(filename):
-    filenamedd = 'Starting Conditions.yaml'
-    file = open(filenamedd, "r")  #filename will need to be changed
-=======
-#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis).
+#Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation).
 def get_starting_conditions(file_name):
     file_name = 'Starting Conditions.yaml'
     file = open(file_name, "r")
->>>>>>> origin/master
     contents = yaml.load(file)
 
     object_list = []
@@ -30,15 +23,8 @@ def get_starting_conditions(file_name):
         place += 1
 
     for i in contents:
-        initial_state = types.SimpleNamespace()
-        initial_state.name = i['name']
-        initial_state.parent_body = i['parent_body']
-        initial_state.mass = i['mass']
-        initial_state.radius = i['radius']
-        initial_state.true_anomaly = i['true_anomaly']
-        initial_state.apsis = i['apsis']
-        initial_state.periapsis = i['periapsis']
-        initial_state.longitude_of_periapsis = i['longitude_of_periapsis']
+        initial_state = types.SimpleNamespace(**i)
+        initial_state.direction_of_rotation = initial_state.direction_of_rotation == 'clockwise'
         object_list.append(initial_state)
     
         key_to_find = i['parent_body']
@@ -48,13 +34,13 @@ def get_starting_conditions(file_name):
     
     return object_list
 
-#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis) and returns
+#Takes a list of tupples (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation) and returns
 #a tupple continaing (name, position, velocity, standard gravitational paramater, radius).
 #The orbital characteristics are defined relative to the center of mass of the whole system.
 #If the mass is -1 then the body is a ficticious body only defined to define the starting conditions.
 def convert_to_internal_representation(initial_state):
     length = len(initial_state)
-    state = [-1] * length
+    state.extend([-1] * length)
     for i in range(length):
         state[i] = convert_to_internal_representation_single(initial_state, i)
         
@@ -77,23 +63,36 @@ def convert_to_internal_representation_single(initial_state, index):
             radius = initial_value.radius
         )
         
-    ecc = (initial_value.apsis - initial_value.periapsis) * (initial_value.apsis + initial_value.periapsis)
+    ecc = (initial_value.apsis - initial_value.periapsis) / (initial_value.apsis + initial_value.periapsis)
     semi_latus_rectum = 2 / (1 / initial_value.apsis + 1 / initial_value.periapsis)
     distance = semi_latus_rectum / (1 + ecc * math.cos(initial_value.true_anomaly))
     speed = math.sqrt(parent_body.GM * (2 / distance))
     
-    #TODO take into account longitude_of_periapsis
-    
     position = types.SimpleNamespace()
-    position.x = distance * math.sin(initial_value.true_anomaly)
-    position.y = distance * math.cos(initial_value.true_anomaly)
+    position.x = distance * math.cos(initial_value.true_anomaly)
+    position.y = distance * math.sin(initial_value.true_anomaly)
     
-    dydx = position.x / (position.y * (ecc ** 2 - 1))
-    denominator = 1 / math.sqrt(1 + dydx ** 2)
+    focal_length = semi_latus_rectum * ecc / (1 - ecc ** 2)
+    zero_x = position.x - focal_length
     
-    velocity = types.SimpleNamespace()
-    velocity.x = speed / denominator
-    velocity.y = velocity.x * dydx
+    if abs(position.y * (ecc ** 2 - 1)) < 1e-16:
+        if (zero_x < 0) != (initial_value.direction_of_rotation):
+            velocity = types.SimpleNamespace(x = 0, y = -speed)
+        else:
+            velocity = types.SimpleNamespace(x = 0, y = speed)
+    else:
+        dydx = zero_x / (position.y * (ecc ** 2 - 1))
+        denominator = 1 / math.sqrt(1 + dydx ** 2)
+        velocity = types.SimpleNamespace(x = speed / denominator, y = velocity.x * dydx)
+        
+        if (position.y > 0) != (initial_value.direction_of_rotation):
+            velocity.x = -velocity.x
+            velocity.y = -velocity.y
+    
+    cos_theta = math.cos(initial_value.longitude_of_periapsis)
+    sin_theta = math.sin(initial_value.longitude_of_periapsis)
+    rotate(position, sin_theta, cos_theta)
+    rotate(velocity, sin_theta, cos_theta)
     
     thing = types.SimpleNamespace()
     thing.position = position
@@ -108,6 +107,12 @@ def convert_to_internal_representation_single(initial_state, index):
     thing.velocity.y += parent_body.velocity.y
     
     return thing
+    
+def rotate(vector, sin, cos):
+    x = vector.x
+    y = vector.y
+    vector.x = cos * x - sin * y
+    vector.y = sin * x + cos * y
     
 #Sets up the display objects for the animator
 def initialise_display():
@@ -128,7 +133,7 @@ def show_simulation():
 def main():
     filename = input("Enter the filename for the initial starting conditions: ")
     
-    state = convert_to_internal_representation(get_starting_conditions(filename))
+    convert_to_internal_representation(get_starting_conditions(filename))
 
     #FIX: This may need to be made global, atm it is unused.
     dt = input("Timestep:")
