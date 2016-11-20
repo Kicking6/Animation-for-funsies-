@@ -68,8 +68,6 @@ def convert_to_internal_representation_single(initial_state, index):
     distance = semi_latus_rectum / (1 + ecc * math.cos(initial_value.true_anomaly))
     speed = math.sqrt(parent_body.GM * (2 / distance))
     
-    #TODO take into account longitude_of_periapsis
-    
     position = types.SimpleNamespace()
     position.x = distance * math.cos(initial_value.true_anomaly)
     position.y = distance * math.sin(initial_value.true_anomaly)
@@ -78,11 +76,23 @@ def convert_to_internal_representation_single(initial_state, index):
     zero_x = position.x - focal_length
     
     if abs(position.y * (ecc ** 2 - 1)) < 1e-16:
-        velocity = types.SimpleNamespace(x = 0, y = speed)
+        if (zero_x < 0) != (initial_value.direction_of_rotation):
+            velocity = types.SimpleNamespace(x = 0, y = -speed)
+        else:
+            velocity = types.SimpleNamespace(x = 0, y = speed)
     else:
         dydx = zero_x / (position.y * (ecc ** 2 - 1))
         denominator = 1 / math.sqrt(1 + dydx ** 2)
         velocity = types.SimpleNamespace(x = speed / denominator, y = velocity.x * dydx)
+        
+        if (position.y > 0) != (initial_value.direction_of_rotation):
+            velocity.x = -velocity.x
+            velocity.y = -velocity.y
+    
+    cos_theta = math.cos(initial_value.longitude_of_periapsis)
+    sin_theta = math.sin(initial_value.longitude_of_periapsis)
+    rotate(position, sin_theta, cos_theta)
+    rotate(velocity, sin_theta, cos_theta)
     
     thing = types.SimpleNamespace()
     thing.position = position
@@ -97,6 +107,12 @@ def convert_to_internal_representation_single(initial_state, index):
     thing.velocity.y += parent_body.velocity.y
     
     return thing
+    
+def rotate(vector, sin, cos):
+    x = vector.x
+    y = vector.y
+    vector.x = cos * x - sin * y
+    vector.y = sin * x + cos * y
     
 #Sets up the display objects for the animator
 def initialise_display():
