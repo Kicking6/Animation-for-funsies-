@@ -77,15 +77,18 @@ def convert_to_internal_representation_single(initial_state, index):
     #TODO take into account longitude_of_periapsis
     
     position = types.SimpleNamespace()
-    position.x = distance * math.sin(initial_value.true_anomaly)
-    position.y = distance * math.cos(initial_value.true_anomaly)
+    position.x = distance * math.cos(initial_value.true_anomaly)
+    position.y = distance * math.sin(initial_value.true_anomaly)
     
-    dydx = position.x / (position.y * (ecc ** 2 - 1))
-    denominator = 1 / math.sqrt(1 + dydx ** 2)
+    focal_length = semi_latus_rectum * ecc / (1 - ecc ** 2)
+    zero_x = position.x - focal_length
     
-    velocity = types.SimpleNamespace()
-    velocity.x = speed / denominator
-    velocity.y = velocity.x * dydx
+    if abs(position.y * (ecc ** 2 - 1)) < 1e-16:
+        velocity = types.SimpleNamespace(x = 0, y = speed)
+    else:
+        dydx = zero_x / (position.y * (ecc ** 2 - 1))
+        denominator = 1 / math.sqrt(1 + dydx ** 2)
+        velocity = types.SimpleNamespace(x = speed / denominator, y = velocity.x * dydx)
     
     thing = types.SimpleNamespace()
     thing.position = position
