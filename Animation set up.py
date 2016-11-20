@@ -5,20 +5,32 @@ from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
 
-fig = plt.figure()
-ax = plt.axes(xlim=(0, 2), ylim=(-2, 2))
-line, = ax.plot([], [], lw = 2)
+def update_line(num, data, line):
+    line.set_data(data[..., :num])
+    return line,
 
-def init():
-    line.set_data([], [])
-    return line,
-	
-def animate(i):
-    x = np.linespace(o, 2, 1000)
-    y = np.sin(2 * np.pi * (x - 0.01 * i))
-    line.set_data(x, y)
-    return line,
-	
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=200, interval=20, blit=True)
+fig1 = plt.figure()
+
+data = np.random.rand(2, 25)
+l, = plt.plot([], [], 'r-')
+plt.xlim(0, 1)
+plt.ylim(0, 1)
+plt.xlabel('x')
+plt.title('test')
+line_ani = animation.FuncAnimation(fig1, update_line, 25, fargs=(data, l),
+                                   interval=500, blit=True)
+#line_ani.save('lines.mp4')
+
+fig2 = plt.figure()
+
+x = np.arange(-9, 10)
+y = np.arange(-9, 10).reshape(-1, 1)
+base = np.hypot(x, y)
+ims = []
+for add in np.arange(5):
+    ims.append((plt.pcolor(x, y, base + add, norm=plt.Normalize(0, 30)),))
+
+im_ani = animation.ArtistAnimation(fig2, ims, interval=50, repeat_delay=3000,
+                                   blit=True)
 
 plt.show()
