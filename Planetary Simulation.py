@@ -2,8 +2,9 @@ import types
 import yaml
 import math
 
-#The list of all objects to be simulated in the form (position, velocity, standard gravitational paramater, radius)[]
-state = []
+from matplotlib import pyplot
+from matplotlib import animation
+
 G = 6.67408 * 10 ** -11
 
 #Defines the starting conditions for the start of the simulation
@@ -40,7 +41,9 @@ def get_starting_conditions(file_name):
 #If the mass is -1 then the body is a ficticious body only defined to define the starting conditions.
 def convert_to_internal_representation(initial_state):
     length = len(initial_state)
-    state.extend([-1] * length)
+    
+    global state
+    state = [-1] * length
     for i in range(length):
         state[i] = convert_to_internal_representation_single(initial_state, i)
         
@@ -114,20 +117,31 @@ def rotate(vector, sin, cos):
     vector.x = cos * x - sin * y
     vector.y = sin * x + cos * y
     
-#Sets up the display objects for the animator
-def initialise_display():
-    print('Not done')
-    
 #Updates the display objects
-def display():
-    print('Not done')
+def display(frame, patch_list):
+    for i in range(0, len(patch_list)):
+        patch_list[i].center = (state[i].position.x, state[i].position.y)
+       
+    simulate(dt)    
+
+#Sets up the display objects for the animator and starts the simulations
+def initialise_display():
+    fig = pyplot.figure()
     
+    patch_list = [pyplot.Circle((x.position.x, x.position.y), radius = x.radius) for x in state]
+    for c in patch_list:
+        pyplot.gca().add_patch(c)
+        
+    pyplot.axis('scaled')
+    pyplot.title('Earth-Moon system')
+    
+    #This variable is needed due to some arcane garbage collection black magic
+    unused = animation.FuncAnimation(fig, display, fargs = (patch_list, ), interval = 20)
+    
+    pyplot.show()
+
 #Steps the things forward by timestep
 def simulate(timestep):
-    print('Not done')
-    
-#Displays the window and starts the animation, this will also start the phyiscal simulation
-def show_simulation():
     print('Not done')
     
 def main():
@@ -135,10 +149,8 @@ def main():
     
     convert_to_internal_representation(get_starting_conditions(filename))
 
-    #FIX: This may need to be made global, atm it is unused.
+    global dt 
     dt = input("Timestep:")
     
     initialise_display()
-    show_simulation()
-
 main()
