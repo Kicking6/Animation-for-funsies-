@@ -19,7 +19,7 @@ def get_starting_conditions(file_name):
     place_dict = {}
     place = 0
     for i in contents:
-        name = i['name'] 
+        name = i['name']
         place_dict[name] = place
         place += 1
 
@@ -69,7 +69,9 @@ def convert_to_internal_representation_single(initial_state, index):
     ecc = (initial_value.apsis - initial_value.periapsis) / (initial_value.apsis + initial_value.periapsis)
     semi_latus_rectum = 2 / (1 / initial_value.apsis + 1 / initial_value.periapsis)
     distance = semi_latus_rectum / (1 + ecc * math.cos(initial_value.true_anomaly))
-    speed = math.sqrt(parent_body.GM * (2 / distance))
+    speed = math.sqrt(parent_body.GM * (2 / distance - 1 / semi_latus_rectum))
+    
+    print(initial_value.name + ": " + str(speed))
     
     position = types.SimpleNamespace()
     position.x = distance * math.cos(initial_value.true_anomaly)
@@ -107,6 +109,7 @@ def convert_to_internal_representation_single(initial_state, index):
     thing.position.x += parent_body.position.x
     thing.position.y += parent_body.position.y
     thing.velocity.x += parent_body.velocity.x
+
     thing.velocity.y += parent_body.velocity.y
     
     return thing
@@ -132,7 +135,7 @@ def initialise_display():
     for c in patch_list:
         pyplot.gca().add_patch(c)
         
-    pyplot.axis('scaled')
+    pyplot.axis([1e9, -1e9, 1e9, -1e9])
     pyplot.title('Earth-Moon system')
     
     #This variable is needed due to some arcane garbage collection black magic
@@ -142,7 +145,7 @@ def initialise_display():
 
 #Steps the things forward by timestep
 def simulate(timestep):
-    for i in range(0, len(state)):
+    for i in range(len(state)):
         for j in range(i + 1, len(state)):
             thing1 = state[i]
             thing2 = state[j]
@@ -166,13 +169,9 @@ def simulate(timestep):
             thing2.velocity.y += delta.y * deltaV2
             #thing2.velocity.z += deltaV1.z
             
-            thing1.position.x += thing1.velocity.x * timestep
-            thing1.position.y += thing1.velocity.y * timestep
-            #thing1.position.z += thing1.velocity.z * timestep
-            
-            thing2.position.x += thing2.velocity.x * timestep
-            thing2.position.y += thing2.velocity.y * timestep
-            #thing2.position.z += thing2.velocity.z * timestep
+    for i in range(len(state)):
+        state[i].position.x += state[i].velocity.x * timestep
+        state[i].position.y += state[i].velocity.y * timestep
             
 def lengthSq(vec):
     return vec.x ** 2 + vec.y ** 2
