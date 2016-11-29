@@ -126,7 +126,7 @@ def display(frame, patch_list):
         patch_list[i].center = (state[i].position.x, state[i].position.y)
        
     simulate(dt)  
-    energy()    
+    pyplot.title("Earth-Moon system. E = %.2e" % energy())
 
 #Potential energy and kinetic
 def energy():
@@ -147,7 +147,6 @@ def initialise_display():
         pyplot.gca().add_patch(c)
         
     pyplot.axis([1e9, -1e9, 1e9, -1e9])
-    pyplot.title('Earth-Moon system')
     
     #This variable is needed due to some arcane garbage collection black magic
     unused = animation.FuncAnimation(fig, display, fargs = (patch_list, ), interval = 20)
