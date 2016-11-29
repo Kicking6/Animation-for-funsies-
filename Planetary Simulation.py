@@ -15,6 +15,10 @@ def get_starting_conditions(file_name):
     file = open(file_name, "r")
     contents = yaml.load(file)
 
+    global scale
+    scale = contents['starting_scale']
+    contents = contents['objects']
+
     object_list = []
     place_dict = {}
     place = 0
@@ -148,7 +152,7 @@ def initialise_display():
     for c in patch_list:
         pyplot.gca().add_patch(c)
         
-    pyplot.axis([1e9, -1e9, 1e9, -1e9])
+    pyplot.axis([scale, -scale, scale, -scale])
     
     #This variable is needed due to some arcane garbage collection black magic
     unused = animation.FuncAnimation(fig, display, fargs = (patch_list, ), interval = 20)
