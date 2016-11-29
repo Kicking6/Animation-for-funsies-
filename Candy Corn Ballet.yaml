@@ -1,0 +1,34 @@
+# Entity Information list
+
+starting_scale: !!float 8e8
+
+objects:
+-   name: Alpha
+    parent_body: -1
+    mass: !!float 7e23
+    radius: 17371000
+    true_anomaly: 0
+    apsis: 0
+    periapsis: 0
+    longitude_of_periapsis: 0
+    direction_of_rotation: clockwise
+
+-   name: Beta
+    parent_body: Alpha
+    mass: !!float 7e23
+    radius: 17371000
+    true_anomaly: 67
+    apsis: 450400000
+    periapsis: 362600000
+    longitude_of_periapsis: 5.5528
+    direction_of_rotation: counter_clockwise    
+    
+-   name: Gamma
+    parent_body: Beta
+    mass: !!float 7e23
+    radius: 17371000
+    true_anomaly: 1.84
+    apsis: 450400000
+    periapsis: 162600000
+    longitude_of_periapsis: 2.36
+    direction_of_rotation: clockwise 

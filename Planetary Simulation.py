@@ -11,7 +11,6 @@ G = 6.67408 * 10 ** -11
 #A starting angle of 0 indicates that the body is directly above (+y). Anti-clockwise, in radians.
 #Returns a dictionary of dictionaires where each tupple contains (name, parent_body, mass, radius, true_anomaly, apsis, periapsis, longitude_of_periapsis, direction_of_rotation).
 def get_starting_conditions(file_name):
-    file_name = 'Starting Conditions.yaml'
     file = open(file_name, "r")
     contents = yaml.load(file)
 
@@ -92,7 +91,7 @@ def convert_to_internal_representation_single(initial_state, index):
     else:
         dydx = zero_x / (position.y * (ecc ** 2 - 1))
         denominator = 1 / math.sqrt(1 + dydx ** 2)
-        velocity = types.SimpleNamespace(x = speed / denominator, y = velocity.x * dydx)
+        velocity = types.SimpleNamespace(x = speed / denominator, y = speed / denominator * dydx)
         
         if (position.y > 0) != (initial_value.direction_of_rotation):
             velocity.x = -velocity.x
@@ -129,8 +128,10 @@ def display(frame, patch_list):
     for i in range(0, len(patch_list)):
         patch_list[i].center = (state[i].position.x, state[i].position.y)
        
-    simulate(dt)  
-    pyplot.title("Earth-Moon system. E = %.2e" % energy())
+    for i in range(100):
+        simulate(dt)  
+    
+    pyplot.title("Earth-Moon system. E = %.4e" % energy())
 
 #Potential energy and kinetic
 def energy():
