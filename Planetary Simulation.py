@@ -131,10 +131,12 @@ def display(frame, patch_list):
 #Potential energy and kinetic
 def energy():
     total_energy = 0
-    for i in state:
-        kinetic_energy = 0.5 * i.GM / G * lengthSq(i.velocity)
-        potential_energy = - (i.GM * ___) / 
-        total_energy += kinetic_energy + potential_energy
+    for i in range(len(state)):
+        kinetic_energy = 0.5 * i.GM / G * lengthSq(state[i].velocity)
+        total_energy += kinetic_energy
+        for j in range(i + 1, len(state)):
+            potential_energy = - (state[i].GM * (state[j].GM / G)) / (lengthSq(vector_subtraction(state[i].position, state[j].position)))**0.5
+            total_energy += potential_energy
       
     return total_energy
     
