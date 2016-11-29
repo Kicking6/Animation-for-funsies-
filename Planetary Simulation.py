@@ -133,7 +133,7 @@ def energy():
     total_energy = 0
     for i in state:
         kinetic_energy = 0.5 * i.GM / G * lengthSq(i.velocity)
-        potential_energy = 0
+        potential_energy = - (i.GM * ___) / 
         total_energy += kinetic_energy + potential_energy
       
     return total_energy
@@ -186,6 +186,15 @@ def simulate(timestep):
             
 def lengthSq(vec):
     return vec.x ** 2 + vec.y ** 2
+    
+#vec1 & vec2 is the input, returns vec1 - vec2.
+# 2d!!!!!!!!!!!!!!
+def vector_subtraction(vec1, vec2):
+    vec = types.SimpleNamespace(x = 0, y = 0)
+    vec.x = vec1.x - vec2.x
+    vec.y = vec1.y - vec2.y
+    #vec.z = vec1.z - vec2.z
+    return vec
 
 def main():
     filename = input("Enter the filename for the initial starting conditions: ")
