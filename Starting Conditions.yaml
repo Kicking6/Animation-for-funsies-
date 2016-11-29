@@ -1,13 +1,16 @@
 # Entity Information list
 
+starting_scale: !!float 1e9
+
+objects:
 -   name: Earth
-    parent_body: -1
+    parent_body: Sun
     mass: !!float 5.97237e24
     radius: 6371000
     true_anomaly: 0
-    apsis: 0
-    periapsis: 0
-    longitude_of_periapsis: 0
+    apsis: 152100000000
+    periapsis: 147095000000
+    longitude_of_periapsis: 102.94719
     direction_of_rotation: clockwise
 
 -   name: Moon
@@ -19,3 +22,13 @@
     periapsis: 362600000
     longitude_of_periapsis: 5.5528
     direction_of_rotation: clockwise    
+    
+-   name: Sun
+    parent_body: -1
+    mass: !!float 1.98855e30
+    radius: 695700000
+    true_anomaly: 0
+    apsis: 0
+    periapsis: 0
+    longitude_of_periapsis: 0
+    direction_of_rotation: clockwise 
