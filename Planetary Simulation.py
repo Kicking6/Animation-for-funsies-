@@ -142,15 +142,48 @@ def initialise_display():
 
 #Steps the things forward by timestep
 def simulate(timestep):
-    print('Not done')
+    for i in range(0, len(state)):
+        for j in range(i + 1, len(state)):
+            thing1 = state[i]
+            thing2 = state[j]
+            
+            #F = GMm / r^2
+            
+            delta = types.SimpleNamespace(x = thing1.position.x - thing2.position.x, y = thing1.position.y - thing2.position.y)
+            r2 = lengthSq(delta)
+            
+            delta.x = delta.x / math.sqrt(r2)
+            delta.y = delta.y / math.sqrt(r2)
+            
+            deltaV1 = timestep * thing2.GM / r2
+            deltaV2 = timestep * thing1.GM / r2
+            
+            thing1.velocity.x -= delta.x * deltaV1
+            thing1.velocity.y -= delta.y * deltaV1
+            #thing1.velocity.z += deltaV1.z
     
+            thing2.velocity.x += delta.x * deltaV2
+            thing2.velocity.y += delta.y * deltaV2
+            #thing2.velocity.z += deltaV1.z
+            
+            thing1.position.x += thing1.velocity.x * timestep
+            thing1.position.y += thing1.velocity.y * timestep
+            #thing1.position.z += thing1.velocity.z * timestep
+            
+            thing2.position.x += thing2.velocity.x * timestep
+            thing2.position.y += thing2.velocity.y * timestep
+            #thing2.position.z += thing2.velocity.z * timestep
+            
+def lengthSq(vec):
+    return vec.x ** 2 + vec.y ** 2
+
 def main():
     filename = input("Enter the filename for the initial starting conditions: ")
     
     convert_to_internal_representation(get_starting_conditions(filename))
 
     global dt 
-    dt = input("Timestep:")
+    dt = float(input("Timestep:"))
     
     initialise_display()
 main()
