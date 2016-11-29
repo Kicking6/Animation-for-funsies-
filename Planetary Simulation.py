@@ -207,7 +207,7 @@ def main():
     convert_to_internal_representation(get_starting_conditions(filename))
 
     global dt 
-    dt = float(input("Timestep:"))
+    dt = float(input("Timestep: "))
     
     initialise_display()
 main()
