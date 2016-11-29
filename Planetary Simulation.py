@@ -125,8 +125,19 @@ def display(frame, patch_list):
     for i in range(0, len(patch_list)):
         patch_list[i].center = (state[i].position.x, state[i].position.y)
        
-    simulate(dt)    
+    simulate(dt)  
+    energy()    
 
+#Potential energy and kinetic
+def energy():
+    total_energy = 0
+    for i in state:
+        kinetic_energy = 0.5 * i.GM / G * lengthSq(i.velocity)
+        potential_energy = 0
+        total_energy += kinetic_energy + potential_energy
+      
+    return total_energy
+    
 #Sets up the display objects for the animator and starts the simulations
 def initialise_display():
     fig = pyplot.figure()
